@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.1022
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryToJson", "QueryToJson\QueryToJson.csproj", "{EFCD8ADF-E72F-4C97-9385-4A406D720113}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryToJson", "QueryToJson.csproj", "{EFCD8ADF-E72F-4C97-9385-4A406D720113}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,6 +9,16 @@
         Title="MainWindow"
         Height="800"
         Width="1400">
+    <Window.Resources>
+        <Style x:Key="valueTbStyle"
+               TargetType="TextBox">
+        </Style>
+
+        <DataTemplate x:Key="valueTb">
+            <TextBox Style="{StaticResource valueTbStyle}"/>
+        </DataTemplate>
+    </Window.Resources>
+
     <TabControl>
         <TabItem Header="Query log">
             <Grid>
@@ -85,11 +95,36 @@
                 </Grid.RowDefinitions>
 
                 <ListView Name="connectionsLv"/>
+
                 <ListView Name="functionsLv"
                           Focusable="False"
                           Grid.Column="1"
                           SelectionChanged="OnSelectFunction"/>
-                <StackPanel Name="jsonFieldsSp" Grid.Column="2"/>
+
+                <StackPanel Orientation="Vertical"
+                            Grid.Column="2">
+                    <ListView Name="jsonFieldsLv">
+                        <ListView.Resources>
+                            <DataTemplate x:Key="jaonValuesCellTemplate">
+                                <TextBox MinWidth="50"/>
+                            </DataTemplate>
+                        </ListView.Resources>
+                        
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Key"/>
+                                <GridViewColumn Header="Value"
+                                                CellTemplate="{StaticResource jaonValuesCellTemplate}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+
+                    <Button Click="OnClickSend">Send</Button>
+                </StackPanel>
+
+                <TextBox Name="apiResponse"
+                         Grid.Column="3"
+                         Margin="5 0 0 0"/>
             </Grid>
         </TabItem>
     </TabControl>

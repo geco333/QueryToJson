@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.Data;
 using System.Data.SqlClient;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,7 +19,6 @@ namespace QueryToJson
 
             courseDataGrid.SelectionChanged += OnClickOnRow;
 
-
             using (SqlConnection sc = new SqlConnection(connectionString))
             {
                 string query = "SELECT * FROM [Course]";
@@ -29,6 +29,9 @@ namespace QueryToJson
 
                 this.courseDataGrid.ItemsSource = ds.Tables[0].DefaultView;
             }
+
+            HttpClient hc = new HttpClient();
+            HttpContent hct = new HttpContent();
         }
 
         private void OnClickOnRow(object sender, SelectionChangedEventArgs e)
