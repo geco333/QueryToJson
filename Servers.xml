@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Servers>
+  <Server>
+    <Name>abc</Name>
+    <Ip>1.2.3.4</Ip>
+  </Server>
+
+  <Server>
+    <Name>def</Name>
+    <Ip>5.6.7.8</Ip>
+  </Server>
+
+  <Server>
+    <Name>ghi</Name>
+    <Ip>9.10.11.12</Ip>
+  </Server>
+</Servers>

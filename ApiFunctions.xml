@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Functions>
+  <Function>
+    <Name>Information</Name>
+
+    <Parameters>
+      <Parameter>
+        <Key>DeviceId</Key>
+        <Value></Value>
+      </Parameter>
+
+      <Parameter>
+        <Key>FCM_Token</Key>
+        <Value></Value>
+      </Parameter>
+
+      <Parameter>
+        <Key>Location</Key>
+        <Value></Value>
+      </Parameter>
+
+      <Parameter>
+        <Key>Token</Key>
+        <Value>easySale</Value>
+      </Parameter>
+
+      <Parameter>
+        <Key>IsFullList</Key>
+        <Value></Value>
+      </Parameter>
+
+      <Parameter>
+        <Key>Sync_From_Date</Key>
+        <Value></Value>
+      </Parameter>
+
+      <Parameter>
+        <Key>Sync_From_Time</Key>
+        <Value></Value>
+      </Parameter>
+    </Parameters>
+  </Function>
+</Functions>
