@@ -19,212 +19,220 @@
         </DataTemplate>
     </Window.Resources>
 
-    <TabControl SelectionChanged="OnTabFocusChange">
-        <TabItem Header="Log">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="3*"/>
-                </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <Grid Grid.Column="0"
-                      Grid.ColumnSpan="3"
-                      HorizontalAlignment="Left">
+        <TabControl SelectionChanged="OnTabFocusChange">
+            <TabItem Header="Log">
+                <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="10*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Name="queryTb"
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Column="0"
+                      Grid.ColumnSpan="3"
+                      HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="10*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Name="queryTb"
                              Height="30"
                              Width="1000"
                              Grid.Column="0"
                              Margin="5"/>
 
-                    <Button Grid.Column="1"
+                        <Button Grid.Column="1"
                     Height="{Binding ElementName=queryTb, Path=Height}"
                     Click="OnClickQuery"
                     Padding="5">Query</Button>
-                </Grid>
+                    </Grid>
 
-                <DataGrid Name="courseDataGrid"
+                    <DataGrid Name="courseDataGrid"
                           SelectionChanged="OnClickLogRow"
                   Grid.Column="0"
                   Grid.Row="1"
                   Margin="5"/>
 
-                <Grid Grid.Column="1"
+                    <Grid Grid.Column="1"
                       Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                    <Button Padding="2"
+                        <Button Padding="2"
                             Grid.Row="0"
                             Margin="5 0 0 0"
                             Click="OnClickCopyToApi"
                             VerticalAlignment="Top"
                             HorizontalAlignment="Left">
-                        Copy to API
-                    </Button>
+                            Copy to API
+                        </Button>
+
+                        <Border BorderBrush="Black"
+                        BorderThickness="1"
+                        Margin="5 5 0 5"
+                        Grid.Row="1">
+                            <TextBox Name="requestDisplay"
+                             FontSize="16"
+                             TextWrapping="Wrap"/>
+                        </Border>
+                    </Grid>
 
                     <Border BorderBrush="Black"
                         BorderThickness="1"
                         Margin="5 5 0 5"
-                        Grid.Row="1">
-                        <TextBox Name="requestDisplay"
-                             FontSize="16"
-                             TextWrapping="Wrap"/>
-                    </Border>
-                </Grid>
-
-                <Border BorderBrush="Black"
-                        BorderThickness="1"
-                        Margin="5 5 0 5"
                         Grid.Column="2"
                         Grid.Row="1">
-                    <TextBox Name="responseDisplay"
+                        <TextBox Name="responseDisplay"
                              FontSize="16"
                              Margin="5"
                              TextWrapping="Wrap"/>
-                </Border>
-            </Grid>
-        </TabItem>
+                    </Border>
+                </Grid>
+            </TabItem>
 
-        <TabItem Header="API">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+            <TabItem Header="API">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Vertical">
-                    <ListView Name="connectionsLv">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Name"
+                    <StackPanel Orientation="Vertical">
+                        <ListView Name="connectionsLv">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Name"
                                             DisplayMemberBinding="{Binding Name}"/>
-                                <GridViewColumn Header="Ip"
+                                    <GridViewColumn Header="Ip"
                                             DisplayMemberBinding="{Binding Ip}"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
 
-                    <StackPanel Name="addServerPanel" 
+                        <StackPanel Name="addServerPanel" 
                                 Orientation="Vertical"
                                 Visibility="Visible">
-                        <StackPanel Orientation="Vertical"
+                            <StackPanel Orientation="Vertical"
                                     Margin="3">
-                            <TextBlock>Name</TextBlock>
-                            <TextBox Name="addServerNameBox" 
+                                <TextBlock>Name</TextBlock>
+                                <TextBox Name="addServerNameBox" 
                                      MinWidth="50"/>
 
-                            <TextBlock>Ip</TextBlock>
-                            <TextBox Name="addServerIpBox" 
+                                <TextBlock>Ip</TextBlock>
+                                <TextBox Name="addServerIpBox" 
                                      MinWidth="50"/>
-                        </StackPanel>
+                            </StackPanel>
 
-                        <StackPanel Orientation="Horizontal">
-                            <Button MaxWidth="50"
+                            <StackPanel Orientation="Horizontal">
+                                <Button MaxWidth="50"
                                 Margin="2"
                                 Click="OnClickConfirmAddServer">
-                                Add
-                            </Button>
+                                    Add
+                                </Button>
 
-                            <Button MaxWidth="50"
+                                <Button MaxWidth="50"
                                 Margin="2"
                                 Click="OnClickCencelAddServer">
-                                Cencel
-                            </Button>
+                                    Cencel
+                                </Button>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
 
-                    <StackPanel Orientation="Horizontal"
+                        <StackPanel Orientation="Horizontal"
                                 Margin="1">
-                        <Button Name="addServerBtn" 
+                            <Button Name="addServerBtn" 
                                 Margin="2"
                                 Padding="2"
                                 Click="OnClickAddServerButton">
-                            Add
-                        </Button>
+                                Add
+                            </Button>
 
-                        <Button Name="delServerBtn" 
+                            <Button Name="delServerBtn" 
                                 Click="OnClickDelServerBtn"
                                 Margin="2"
                                 Padding="2">
-                            Delete
-                        </Button>
+                                Delete
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
 
-                    <TextBlock Name="serverMessageBlock"
-                               Text="Server messages."
-                               Visibility="Visible"/>
-                </StackPanel>
-
-                <ListView Name="functionsLv"
+                    <ListView Name="functionsLv"
                           Grid.Column="1"
                           SelectionChanged="OnSelectFunction">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="ApiFunction"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-
-                <StackPanel Orientation="Vertical"
-                            Grid.Column="2">
-                    <ListView Name="jsonFieldsLv">
-                        <ListView.Resources>
-                            <DataTemplate x:Key="jaonValuesCellTemplate">
-                                <TextBox Text="{Binding Value}" 
-                                         MinWidth="100"/>
-                            </DataTemplate>
-                        </ListView.Resources>
-
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Key"
-                                                DisplayMemberBinding="{Binding Key}"/>
-                                <GridViewColumn Header="Value"
-                                                CellTemplate="{StaticResource jaonValuesCellTemplate}"/>
+                                <GridViewColumn Header="ApiFunction"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
 
-                    <StackPanel Orientation="Horizontal">
-                        <Button Click="OnClickSend"
+                    <StackPanel Orientation="Vertical"
+                            Grid.Column="2">
+                        <ListView Name="jsonFieldsLv">
+                            <ListView.Resources>
+                                <DataTemplate x:Key="jaonValuesCellTemplate">
+                                    <TextBox Text="{Binding Value}" 
+                                         MinWidth="100"/>
+                                </DataTemplate>
+                            </ListView.Resources>
+
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Key"
+                                                DisplayMemberBinding="{Binding Key}"/>
+                                    <GridViewColumn Header="Value"
+                                                CellTemplate="{StaticResource jaonValuesCellTemplate}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Button Click="OnClickSend"
                             MaxWidth="100"
                             Padding="2"
                             HorizontalAlignment="Left"
                             Margin="2">Send</Button>
 
-                        <Button Name="pasteFromClipboard"
+                            <Button Name="pasteFromClipboard"
                                 Click="OnClickPasteFromClipboard"
                                 MaxWidth="100"
                                 Padding="2"
                                 HorizontalAlignment="Left"
                                 Margin="2">Paste from clipboard</Button>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
 
-                <TextBox Name="apiResponse"
+                    <TextBox Name="apiResponse"
                          Grid.Column="3"/>
-            </Grid>
-        </TabItem>
-    </TabControl>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <TextBlock Name="messageBar"
+                   FontSize="15"
+                   Background="LightGray"
+                   Grid.Row="1"/>
+    </Grid>
 </Window>
 
 
