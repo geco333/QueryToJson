@@ -2,17 +2,212 @@
 
 <Servers>
   <Server>
-    <Name>abc</Name>
-    <Ip>1.2.3.4</Ip>
+    <Name>גלעוז</Name>
+    <Ip>62.219.160.155</Ip>
   </Server>
 
   <Server>
-    <Name>def</Name>
-    <Ip>5.6.7.8</Ip>
+    <Name>חוות הפטריות תקוע</Name>
+    <Ip>82.81.219.205</Ip>
   </Server>
 
   <Server>
-    <Name>ghi</Name>
-    <Ip>9.10.11.12</Ip>
+    <Name>קולי מנופים</Name>
+    <Ip>62.219.141.106</Ip>
+  </Server>
+
+  <Server>
+    <Name>ש.ונציה</Name>
+    <Ip>212.143.234.39</Ip>
+  </Server>
+
+  <Server>
+    <Name>(IIS) גולדן לייט</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>אבאל יזמות בע"מ (IIS)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>אבאל יזמות בע"מ (SAP)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>אימפורט פור יו בע"מ</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>אימפורטים</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>אנסויטק</Name>
+    <Ip>62.219.228.124</Ip>
+  </Server>
+
+  <Server>
+    <Name>אקזיט מובייל</Name>
+    <Ip>Hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>ארגיל</Name>
+    <Ip>213.8.173.234</Ip>
+  </Server>
+
+  <Server>
+    <Name>ב.מ.ב צמיגים (IIS)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>ב.מ.ב צמיגים (SAP)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>בנקו תאורה (IIS)</Name>
+    <Ip>62.219.166.224</Ip>
+  </Server>
+
+  <Server>
+    <Name>בנקו תאורה (SAP)</Name>
+    <Ip>62.219.166.224</Ip>
+  </Server>
+
+  <Server>
+    <Name>ברגל</Name>
+    <Ip>10.10.10.47</Ip>
+  </Server>
+
+  <Server>
+    <Name>גבעת הפרחים</Name>
+    <Ip>213.8.119.9</Ip>
+  </Server>
+
+  <Server>
+    <Name>גולדן לייט (SAP)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>גיל הירש (IIS)</Name>
+    <Ip>82.80.196.29</Ip>
+  </Server>
+
+  <Server>
+    <Name>גיל הירש (SAP)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>דדוש דניאל שיווק מזון בע"מ</Name>
+    <Ip>hosting.menahel4u.com:7740</Ip>
+  </Server>
+
+  <Server>
+    <Name>הום קולקשין</Name>
+    <Ip>37.19.115.28</Ip>
+  </Server>
+
+  <Server>
+    <Name>החברה המרכזית לשיווק עישון</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>וואוואדו</Name>
+    <Ip>31.168.45.250</Ip>
+  </Server>
+
+  <Server>
+    <Name>חברת אימפורטים</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>חוויה</Name>
+    <Ip>37.46.41.175</Ip>
+  </Server>
+
+  <Server>
+    <Name>חוויה</Name>
+    <Ip>37.46.41.175</Ip>
+  </Server>
+
+  <Server>
+    <Name>מיסטרל</Name>
+    <Ip>ms-pot.allegronet.co.il</Ip>
+  </Server>
+
+  <Server>
+    <Name>מלכאן (IIS)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>מלכאן (SAP)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>סאג</Name>
+    <Ip>109.226.11.201</Ip>
+  </Server>
+
+  <Server>
+    <Name>עמית מרשנסקי</Name>
+    <Ip>82.81.42.10</Ip>
+  </Server>
+
+  <Server>
+    <Name>ערד הנדסה (IIS)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>עמית מרשנסקי</Name>
+    <Ip>82.81.42.10</Ip>
+  </Server>
+
+  <Server>
+    <Name>ערד הנדסה (SAP)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>פאר לי</Name>
+    <Ip>147.235.162.17</Ip>
+  </Server>
+
+  <Server>
+    <Name>פרידנזון אייר אנד אושין</Name>
+    <Ip>192.116.162.66</Ip>
+  </Server>
+
+  <Server>
+    <Name>פריון הזרעות (IIS)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>פריון הזרעות (SAP)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>קודן  (IIS)</Name>
+    <Ip>hosting.menahel4u.com</Ip>
+  </Server>
+
+  <Server>
+    <Name>רד רוק (IIS)</Name>
+    <Ip>82.80.196.27</Ip>
   </Server>
 </Servers>

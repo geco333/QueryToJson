@@ -61,9 +61,13 @@ namespace QueryToJson
 
             if (row != null)
             {
-                string request = row.Row["Json"] as string;
+                string request = row.Row["U_Request"] as string;
                 JObject joRequest = JObject.Parse(request);
                 this.requestDisplay.Text = joRequest.ToString();
+
+                string response = row.Row["U_Response"] as string;
+                JObject joresponse = JObject.Parse(response);
+                this.responseDisplay.Text = joresponse.ToString();
             }
         }
         private void OnClickQuery(object sender, RoutedEventArgs e)
@@ -99,14 +103,20 @@ namespace QueryToJson
                 }
             }
         }
-        private void OnTabFocusChange(object sender, SelectionChangedEventArgs e) => this.pasteFromClipboard.Visibility = Constants.ClipBoard is null ? Visibility.Collapsed : Visibility.Visible;
+        private void OnTabFocusChange(object sender, SelectionChangedEventArgs e)
+        {
+            this.pasteFromClipboard.Visibility = Constants.ClipBoard == null ? Visibility.Collapsed : Visibility.Visible;
+        }
         private void OnClickAddServerButton(object sender, RoutedEventArgs e)
         {
             this.addServerPanel.Visibility = Visibility.Visible;
             this.addServerBtn.Visibility = Visibility.Hidden;
             this.delServerBtn.Visibility = Visibility.Hidden;
         }
-        private void OnClickCencelAddServer(object sender, RoutedEventArgs e) => this.ToggleAddServerPanel();
+        private void OnClickCencelAddServer(object sender, RoutedEventArgs e)
+        {
+            this.ToggleAddServerPanel();
+        }
         private void OnClickConfirmAddServer(object sender, RoutedEventArgs e)
         {
             string name = this.addServerNameBox.Text;
@@ -161,217 +171,237 @@ namespace QueryToJson
 
             timer.Start();
         }
-    }
 
-    public static class Constants
-    {
-        public const string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=MySchool;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
-        public const string SelectAllDefaultQuery = "SELECT * FROM [dbo].[Course]";
-
-        public static JObject ClipBoard;
-    }
-
-    public class Server
-    {
-        public string Name { get; set; }
-        public string Ip { get; set; }
-    }
-    public class ApiFunctionParameter
-    {
-        public string Key { get; set; }
-        public string Value { get; set; }
-    }
-
-    public class DBHandler
-    {
-        private MainWindow mw;
-
-        public DBHandler(MainWindow mw) => this.mw = mw;
-
-        public void SendQuery(string query = Constants.SelectAllDefaultQuery)
+        public static class Constants
         {
-            using (SqlConnection sc = new SqlConnection(Constants.connectionString))
-            {
-                this.mw.queryTb.Text = query;
+            public const string connectionString = @"Data Source=SAP-DEV-2;Initial Catalog=SBODemoIL;Integrated Security=True";
 
-                SqlDataAdapter adapter = new SqlDataAdapter(query, sc);
-                DataSet ds = new DataSet();
-                adapter.Fill(ds);
+            public const string SelectAllDefaultQuery = "SELECT CreateDate, UpdateTime, U_ActionType, U_Request, U_Response " +
+                                                        "FROM [@ES_LOG] " +
+                                                        "ORDER BY CreateDate, UpdateTime DESC";
 
-                this.mw.courseDataGrid.ItemsSource = ds.Tables[0].DefaultView;
-            }
-        }
-    }
-    public class APIHandler
-    {
-        private MainWindow mw;
-        private readonly HttpClient client = new HttpClient();
-
-        public APIHandler(MainWindow mw) => this.mw = mw;
-
-        public async void Send(string body)
-        {
-            string serverIp = (this.mw.connectionsLv.SelectedValue as Server).Ip;
-
-            StringContent content = new StringContent(body, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await this.client.PostAsync("http://" + serverIp + "/B1.SVC", content);
-        }
-    }
-
-    public abstract class FromXML
-    {
-        private string xmlFileName;
-        protected XElement root;
-
-        public FromXML(string xmlFileName)
-        {
-            this.xmlFileName = xmlFileName;
-            this.LoadXmlFile();
+            public static JObject ClipBoard;
         }
 
-        private void LoadXmlFile() => this.root = XElement.Load(this.xmlFileName);
-        public abstract void FillListView();
-    }
-    public class ServersList : FromXML
-    {
-        private MainWindow mw;
-        private List<Server> servers;
-
-        public ServersList(MainWindow mw, string xmlFileName) : base(xmlFileName) => this.mw = mw;
-
-        public override void FillListView()
+        public class Server
         {
-            try
-            {
-                this.servers = base.root.Elements("Server").Select(
-                    server => new Server
-                    {
-                        Name = server.Element("Name").Value,
-                        Ip = server.Element("Ip").Value
-                    }).ToList();
-
-                this.mw.connectionsLv.ItemsSource = this.servers;
-                this.mw.connectionsLv.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
-            }
+            public string Name { get; set; }
+            public string Ip { get; set; }
+        }
+        public class ApiFunctionParameter
+        {
+            public string Key { get; set; }
+            public string Value { get; set; }
         }
 
-        public void AddNewServer(string name, string ip)
+        public class DBHandler
         {
-            try
+            private MainWindow mw;
+
+            public DBHandler(MainWindow mw)
             {
-                base.root.Elements("Server").Single(x => x.Element("Name").Value == name && x.Element("Ip").Value == ip);
-                this.mw.ShowMessage(MessageType.AddServerError);
-                return;
-            }
-            catch (System.InvalidOperationException ex)
-            {
+                this.mw = mw;
             }
 
-            XElement newServer = new XElement("Server");
-
-            newServer.Add(new XElement("Name", name));
-            newServer.Add(new XElement("Ip", ip));
-
-            base.root.Add(newServer);
-            base.root.Save("Servers.xml");
-
-            this.servers.Add(new Server { Name = name, Ip = ip });
-
-            this.mw.connectionsLv.Items.Refresh();
-
-            this.mw.ShowMessage(MessageType.AddServer);
-        }
-        public void RemoveServer(string name, string ip)
-        {
-            XElement serverToDelete = base.root.Elements("Server").Single(x => x.Element("Name").Value == name && x.Element("Ip").Value == ip);
-
-            serverToDelete.Remove();
-            base.root.Save("Servers.xml");
-
-            this.servers.Remove(this.servers.Single(s => s.Name == name && s.Ip == ip));
-
-            this.mw.connectionsLv.Items.Refresh();
-        }
-    }
-    public class FunctionsList : FromXML
-    {
-        private MainWindow mw;
-
-        public FunctionsList(MainWindow mw, string xmlFileName) : base(xmlFileName) => this.mw = mw;
-
-        public override void FillListView()
-        {
-            try
+            public void SendQuery(string query = Constants.SelectAllDefaultQuery)
             {
-                IEnumerable<string> apiFunctions = base.root.Elements("Function").Select(function => function.Element("Name").Value);
-
-                this.mw.functionsLv.ItemsSource = apiFunctions;
-                this.mw.functionsLv.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
-            }
-        }
-        public void SelectFunction(string selectedFunction)
-        {
-            try
-            {
-                // Get the function name with respect to the function selected.
-                XElement function = base.root.Elements("Function").Single(f => f.Element("Name").Value == (string)selectedFunction);
-
-                // Get all the functions' parameters.
-                IEnumerable<XElement> parameters = function.Elements("Parameters").Elements("Parameter");
-
-                // Create a list of ApiFunctionParameter using the relevent functions' parameters.
-                IEnumerable<ApiFunctionParameter> apiFunctionParametersList = parameters.Select(
-                    p => new ApiFunctionParameter
-                    {
-                        Key = p.Element("Key").Value,
-                        Value = p.Element("Value").Value
-                    }
-                );
-
-                this.mw.jsonFieldsLv.ItemsSource = apiFunctionParametersList;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
-            }
-        }
-        public string BuildBody()
-        {
-            StringBuilder sb = new StringBuilder();
-            StringWriter sw = new StringWriter(sb);
-
-            try
-            {
-                using (JsonWriter jr = new JsonTextWriter(sw))
+                using (SqlConnection sc = new SqlConnection(Constants.connectionString))
                 {
-                    jr.Formatting = Formatting.Indented;
+                    this.mw.queryTb.Text = query;
 
-                    jr.WriteStartObject();
+                    SqlDataAdapter adapter = new SqlDataAdapter(query, sc);
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
 
-                    foreach (ApiFunctionParameter item in this.mw.jsonFieldsLv.Items)
-                    {
-                        jr.WritePropertyName(item.Key);
-                        jr.WriteValue(item.Value);
-                    }
-
-                    jr.WriteEndObject();
+                    this.mw.courseDataGrid.ItemsSource = ds.Tables[0].DefaultView;
                 }
             }
-            catch (Exception ex)
+        }
+        public class APIHandler
+        {
+            private MainWindow mw;
+            private readonly HttpClient client = new HttpClient();
+
+            public APIHandler(MainWindow mw)
             {
-                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+                this.mw = mw;
             }
 
-            return sb.ToString();
+            public async void Send(string body)
+            {
+                string serverIp = (this.mw.connectionsLv.SelectedValue as Server).Ip;
+
+                StringContent content = new StringContent(body, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await this.client.PostAsync("http://" + serverIp + "/B1.SVC", content);
+            }
+        }
+
+        public abstract class FromXML
+        {
+            private string xmlFileName;
+            protected XElement root;
+
+            public FromXML(string xmlFileName)
+            {
+                this.xmlFileName = xmlFileName;
+                this.LoadXmlFile();
+            }
+
+            private void LoadXmlFile()
+            {
+                this.root = XElement.Load(this.xmlFileName);
+            }
+            public abstract void FillListView();
+        }
+        public class ServersList : FromXML
+        {
+            private MainWindow mw;
+            private List<Server> servers;
+
+            public ServersList(MainWindow mw, string xmlFileName)
+                : base(xmlFileName)
+            {
+                this.mw = mw;
+            }
+
+            public override void FillListView()
+            {
+                try
+                {
+                    this.servers = base.root.Elements("Server").Select(
+                        server => new Server
+                        {
+                            Name = server.Element("Name").Value,
+                            Ip = server.Element("Ip").Value
+                        }).ToList();
+
+                    this.mw.connectionsLv.ItemsSource = this.servers;
+                    this.mw.connectionsLv.SelectedIndex = 0;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+                }
+            }
+
+            public void AddNewServer(string name, string ip)
+            {
+                try
+                {
+                    base.root.Elements("Server").Single(x => x.Element("Name").Value == name && x.Element("Ip").Value == ip);
+                    this.mw.ShowMessage(MessageType.AddServerError);
+                    return;
+                }
+                catch (System.InvalidOperationException ex)
+                {
+                }
+
+                XElement newServer = new XElement("Server");
+
+                newServer.Add(new XElement("Name", name));
+                newServer.Add(new XElement("Ip", ip));
+
+                base.root.Add(newServer);
+                base.root.Save("Servers.xml");
+
+                this.servers.Add(new Server { Name = name, Ip = ip });
+
+                this.mw.connectionsLv.Items.Refresh();
+
+                this.mw.ShowMessage(MessageType.AddServer);
+            }
+            public void RemoveServer(string name, string ip)
+            {
+                XElement serverToDelete = base.root.Elements("Server").Single(x => x.Element("Name").Value == name && x.Element("Ip").Value == ip);
+
+                serverToDelete.Remove();
+                base.root.Save("Servers.xml");
+
+                this.servers.Remove(this.servers.Single(s => s.Name == name && s.Ip == ip));
+
+                this.mw.connectionsLv.Items.Refresh();
+            }
+        }
+        public class FunctionsList : FromXML
+        {
+            private MainWindow mw;
+
+            public FunctionsList(MainWindow mw, string xmlFileName)
+                : base(xmlFileName)
+            {
+                this.mw = mw;
+            }
+
+            public override void FillListView()
+            {
+                try
+                {
+                    IEnumerable<string> apiFunctions = base.root.Elements("Function").Select(function => function.Element("Name").Value);
+
+                    this.mw.functionsLv.ItemsSource = apiFunctions;
+                    this.mw.functionsLv.SelectedIndex = 0;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+                }
+            }
+            public void SelectFunction(string selectedFunction)
+            {
+                try
+                {
+                    // Get the function name with respect to the function selected.
+                    XElement function = base.root.Elements("Function").Single(f => f.Element("Name").Value == (string)selectedFunction);
+
+                    // Get all the functions' parameters.
+                    IEnumerable<XElement> parameters = function.Elements("Parameters").Elements("Parameter");
+
+                    // Create a list of ApiFunctionParameter using the relevent functions' parameters.
+                    IEnumerable<ApiFunctionParameter> apiFunctionParametersList = parameters.Select(
+                        p => new ApiFunctionParameter
+                        {
+                            Key = p.Element("Key").Value,
+                            Value = p.Element("Value").Value
+                        }
+                    );
+
+                    this.mw.jsonFieldsLv.ItemsSource = apiFunctionParametersList;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+                }
+            }
+            public string BuildBody()
+            {
+                StringBuilder sb = new StringBuilder();
+                StringWriter sw = new StringWriter(sb);
+
+                try
+                {
+                    using (JsonWriter jr = new JsonTextWriter(sw))
+                    {
+                        jr.Formatting = Formatting.Indented;
+
+                        jr.WriteStartObject();
+
+                        foreach (ApiFunctionParameter item in this.mw.jsonFieldsLv.Items)
+                        {
+                            jr.WritePropertyName(item.Key);
+                            jr.WriteValue(item.Value);
+                        }
+
+                        jr.WriteEndObject();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+                }
+
+                return sb.ToString();
+            }
         }
     }
 }
