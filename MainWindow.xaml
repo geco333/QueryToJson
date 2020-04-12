@@ -25,13 +25,18 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TabControl SelectionChanged="OnTabFocusChange">
-            <TabItem Header="Log">
+        <TabControl>
+            <!--*************-->
+            <!--** Log tab **-->
+            <!--*************-->
+            <TabItem Header="Log"
+                     DataContext="{Binding LogVM, Source={StaticResource Locator}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="148*"/>
+                        <ColumnDefinition Width="260*"/>
+                        <ColumnDefinition Width="260*"/>
                     </Grid.ColumnDefinitions>
 
                     <Grid.RowDefinitions>
@@ -40,71 +45,84 @@
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Column="0"
-                      Grid.ColumnSpan="3"
-                      HorizontalAlignment="Left">
+                          Grid.ColumnSpan="4"
+                          HorizontalAlignment="Left">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="10*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBox Name="queryTb"
-                             Height="30"
-                             Width="1000"
-                             Grid.Column="0"
-                             Margin="5"/>
+                        <!-- Top query bar. -->
+                        <TextBox Height="30"
+                                 Width="1000"
+                                 Grid.Column="0"
+                                 Margin="5"/>
 
                         <Button Grid.Column="1"
-                    Height="{Binding ElementName=queryTb, Path=Height}"
-                    Click="OnClickQuery"
-                    Padding="5">Query</Button>
+                                Height="{Binding ElementName=queryTb, Path=Height}"
+                                Padding="5">Query</Button>
+                        <!-- Top query bar. -->
                     </Grid>
 
-                    <DataGrid Name="courseDataGrid"
-                          SelectionChanged="OnClickLogRow"
-                  Grid.Column="0"
-                  Grid.Row="1"
-                  Margin="5"/>
+                    <!-- Database view. -->
+                    <DataGrid ItemsSource="{Binding Log.DB}"
+                              SelectedItem="{Binding Log.SelectedServer}"
+                              Grid.Column="0"
+                              Grid.Row="1"
+                              Margin="5" Grid.ColumnSpan="2">
+                    </DataGrid>
+                    <!-- Database view. -->
 
-                    <Grid Grid.Column="1"
-                      Grid.Row="1">
+                    <Grid Grid.Column="2"
+                          Grid.Row="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
+                        <!-- Copy json data to clipboard for pasting in the API tab. -->
                         <Button Padding="2"
-                            Grid.Row="0"
-                            Margin="5 0 0 0"
-                            Click="OnClickCopyToApi"
-                            VerticalAlignment="Top"
-                            HorizontalAlignment="Left">
+                                Grid.Row="0"
+                                Margin="5 0 0 0"
+                                Click="OnClickCopyToApi"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Left">
                             Copy to API
                         </Button>
+                        <!-- Copy json data to clipboard for pasting in the API tab. -->
 
+                        <!-- Request view -->
                         <Border BorderBrush="Black"
-                        BorderThickness="1"
-                        Margin="5 5 0 5"
-                        Grid.Row="1">
-                            <TextBox Name="requestDisplay"
-                             FontSize="16"
-                             TextWrapping="Wrap"/>
+                                BorderThickness="1"
+                                Margin="5 5 0 5"
+                                Grid.Row="1">
+                            <TextBox FontSize="16"
+                                     Text="{Binding Log.Request}"
+                                     TextWrapping="Wrap"/>
                         </Border>
+                        <!-- Request view -->
                     </Grid>
 
+                    <!-- Response view -->
                     <Border BorderBrush="Black"
                         BorderThickness="1"
                         Margin="5 5 0 5"
-                        Grid.Column="2"
+                        Grid.Column="3"
                         Grid.Row="1">
                         <TextBox Name="responseDisplay"
                              FontSize="16"
                              Margin="5"
                              TextWrapping="Wrap"/>
                     </Border>
+                    <!-- Response view -->
                 </Grid>
             </TabItem>
 
-            <TabItem Header="API">
+            <!--*************-->
+            <!--** API tab **-->
+            <!--*************-->
+            <TabItem Header="API"
+                     Name="apiTab">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -117,8 +135,61 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Orientation="Vertical">
-                        <ListView Name="connectionsLv">
+                    <StackPanel DataContext="{Binding ServersVM, Source={StaticResource Locator}}"
+                                Orientation="Vertical">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="1">
+                                <Button Name="addServerBtn"
+                                        Command="{Binding ToggleAddPanelCommand}"
+                                        Margin="2"
+                                        Padding="2">
+                                    Add
+                                </Button>
+
+                                <Button Name="delServerBtn" 
+                                        Margin="2"
+                                        Padding="2"
+                                        Command="{Binding DeleteServerCommand}">
+                                    Delete
+                                </Button>
+                            </StackPanel>
+
+                            <!-- Add new server panel. -->
+                            <StackPanel Name="addServerPanel" 
+                                        Orientation="Vertical"
+                                        Margin="3"
+                                        Visibility="{Binding AddPanelVisibility}">
+                                <TextBlock>Name</TextBlock>
+                                <TextBox Name="addServerNameBox" 
+                                         MinWidth="50"
+                                         Text="{Binding NewServer.Name}"/>
+
+                                <TextBlock>Ip</TextBlock>
+                                <TextBox Name="addServerIpBox" 
+                                         MinWidth="50"
+                                         Text="{Binding NewServer.Ip}"/>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <Button MaxWidth="50"
+                                            Margin="2"
+                                            Command="{Binding AddServerCommand}">
+                                        Add
+                                    </Button>
+
+                                    <Button MaxWidth="50"
+                                            Margin="2"
+                                            Command="{Binding ToggleAddPanelCommand}">
+                                        Cencel
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Servers view. -->
+                        <ListView ItemsSource="{Binding Servers}"
+                                  SelectedItem="{Binding SelectedServer}"
+                                  SelectedIndex="0">
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="Name"
@@ -128,57 +199,12 @@
                                 </GridView>
                             </ListView.View>
                         </ListView>
-
-                        <StackPanel Name="addServerPanel" 
-                                Orientation="Vertical"
-                                Visibility="Visible">
-                            <StackPanel Orientation="Vertical"
-                                    Margin="3">
-                                <TextBlock>Name</TextBlock>
-                                <TextBox Name="addServerNameBox" 
-                                     MinWidth="50"/>
-
-                                <TextBlock>Ip</TextBlock>
-                                <TextBox Name="addServerIpBox" 
-                                     MinWidth="50"/>
-                            </StackPanel>
-
-                            <StackPanel Orientation="Horizontal">
-                                <Button MaxWidth="50"
-                                Margin="2"
-                                Click="OnClickConfirmAddServer">
-                                    Add
-                                </Button>
-
-                                <Button MaxWidth="50"
-                                Margin="2"
-                                Click="OnClickCencelAddServer">
-                                    Cencel
-                                </Button>
-                            </StackPanel>
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal"
-                                Margin="1">
-                            <Button Name="addServerBtn" 
-                                Margin="2"
-                                Padding="2"
-                                Click="OnClickAddServerButton">
-                                Add
-                            </Button>
-
-                            <Button Name="delServerBtn" 
-                                Click="OnClickDelServerBtn"
-                                Margin="2"
-                                Padding="2">
-                                Delete
-                            </Button>
-                        </StackPanel>
                     </StackPanel>
 
+                    <!-- Functions view. -->
                     <ListView Name="functionsLv"
                           Grid.Column="1"
-                          SelectionChanged="OnSelectFunction">
+                          SelectedIndex="0">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="ApiFunction"/>
@@ -186,6 +212,7 @@
                         </ListView.View>
                     </ListView>
 
+                    <!-- Parameters view. -->
                     <StackPanel Orientation="Vertical"
                             Grid.Column="2">
                         <ListView Name="jsonFieldsLv">
@@ -222,16 +249,19 @@
                         </StackPanel>
                     </StackPanel>
 
+                    <!-- Response view. -->
                     <TextBox Name="apiResponse"
                          Grid.Column="3"/>
                 </Grid>
             </TabItem>
         </TabControl>
 
-        <TextBlock Name="messageBar"
+        <TextBlock DataContext="{Binding MainVM, Source={StaticResource Locator}}"
                    FontSize="15"
                    Background="LightGray"
-                   Grid.Row="1"/>
+                   Grid.Row="1"
+                   Visibility="{Binding MessageBar.StatusVisbility, Mode=TwoWay}"
+                   Text="{Binding MessageBar.Message, Mode=TwoWay}"/>
     </Grid>
 </Window>
 
