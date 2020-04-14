@@ -11,9 +11,9 @@ namespace QueryToJson.ViewModel
         private MessageBar _messageBar = new MessageBar();
         public MessageBar MessageBar { get => _messageBar; set => _messageBar = value; }
 
-        public MainWindowVM() => MessengerInstance.Register<ShowMessage>(this, ShowMessage);
+        public MainWindowVM() => MessengerInstance.Register<ShowMessageBar>(this, ShowMessage);
 
-        public void ShowMessage(ShowMessage showMessage)
+        public void ShowMessage(ShowMessageBar showMessage)
         {
             switch (showMessage.MessageType)
             {

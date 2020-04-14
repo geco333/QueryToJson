@@ -6,9 +6,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QueryToJson"
         mc:Ignorable="d"
-        Title="MainWindow"
-        Height="800"
-        Width="1400">
+        Title="API Deshboard"
+        Height="600"
+        Width="1200">
     <Window.Resources>
         <Style x:Key="valueTbStyle"
                TargetType="TextBox">
@@ -29,8 +29,8 @@
             <!--*************-->
             <!--** Log tab **-->
             <!--*************-->
-            <TabItem Header="Log"
-                     DataContext="{Binding LogVM, Source={StaticResource Locator}}">
+            <TabItem DataContext="{Binding LogVM, Source={StaticResource Locator}}"
+                     Header="Log">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="25*"/>
@@ -84,7 +84,6 @@
                         <Button Padding="2"
                                 Grid.Row="0"
                                 Margin="5 0 0 0"
-                                Click="OnClickCopyToApi"
                                 VerticalAlignment="Top"
                                 HorizontalAlignment="Left">
                             Copy to API
@@ -130,11 +129,11 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
+                    <!-- Servers -->
                     <StackPanel DataContext="{Binding ServersVM, Source={StaticResource Locator}}"
                                 Orientation="Vertical">
                         <StackPanel Orientation="Vertical">
@@ -202,9 +201,11 @@
                     </StackPanel>
 
                     <!-- Functions view. -->
-                    <ListView Name="functionsLv"
-                          Grid.Column="1"
-                          SelectedIndex="0">
+                    <ListView DataContext="{Binding FunctionsVM, Source={StaticResource Locator}}"
+                              ItemsSource="{Binding Functions}"
+                              SelectedItem="{Binding SelectedFunction}"
+                              Grid.Column="1"
+                              SelectedIndex="0">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="ApiFunction"/>
@@ -213,49 +214,53 @@
                     </ListView>
 
                     <!-- Parameters view. -->
-                    <StackPanel Orientation="Vertical"
-                            Grid.Column="2">
-                        <ListView Name="jsonFieldsLv">
+                    <StackPanel DataContext="{Binding FunctionsVM, Source={StaticResource Locator}}"
+                                Orientation="Vertical"
+                                Grid.Column="2">
+                        <ListView ItemsSource="{Binding Parameters}">
                             <ListView.Resources>
                                 <DataTemplate x:Key="jaonValuesCellTemplate">
                                     <TextBox Text="{Binding Value}" 
-                                         MinWidth="100"/>
+                                             MinWidth="100"/>
                                 </DataTemplate>
                             </ListView.Resources>
 
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="Key"
-                                                DisplayMemberBinding="{Binding Key}"/>
+                                                    DisplayMemberBinding="{Binding Key}"/>
                                     <GridViewColumn Header="Value"
-                                                CellTemplate="{StaticResource jaonValuesCellTemplate}"/>
+                                                    CellTemplate="{StaticResource jaonValuesCellTemplate}"/>
                                 </GridView>
                             </ListView.View>
                         </ListView>
 
                         <StackPanel Orientation="Horizontal">
-                            <Button Click="OnClickSend"
-                            MaxWidth="100"
-                            Padding="2"
-                            HorizontalAlignment="Left"
-                            Margin="2">Send</Button>
+                            <Button MaxWidth="100"
+                                    Padding="2"
+                                    HorizontalAlignment="Left"
+                                    Margin="2"
+                                    Command="{Binding SendCommand}">
+                                Send
+                            </Button>
 
                             <Button Name="pasteFromClipboard"
-                                Click="OnClickPasteFromClipboard"
-                                MaxWidth="100"
-                                Padding="2"
-                                HorizontalAlignment="Left"
-                                Margin="2">Paste from clipboard</Button>
+                                    MaxWidth="100"
+                                    Padding="2"
+                                    HorizontalAlignment="Left"
+                                    Margin="2">Paste</Button>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- Response view. -->
-                    <TextBox Name="apiResponse"
-                         Grid.Column="3"/>
+                    <TextBox DataContext="{Binding FunctionsVM, Source={StaticResource Locator}}"
+                             Grid.Column="3"
+                             Text="{Binding Response}"/>
                 </Grid>
             </TabItem>
         </TabControl>
 
+        <!-- Message bar. -->
         <TextBlock DataContext="{Binding MainVM, Source={StaticResource Locator}}"
                    FontSize="15"
                    Background="LightGray"

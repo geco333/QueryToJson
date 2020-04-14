@@ -41,4 +41,25 @@
       </Parameter>
     </Parameters>
   </Function>
+
+  <Function>
+    <Name>Function2</Name>
+
+    <Parameters>
+      <Parameter>
+        <Key>Parameter0</Key>
+        <Value></Value>
+      </Parameter>
+
+      <Parameter>
+        <Key>Parameter1</Key>
+        <Value></Value>
+      </Parameter>
+
+      <Parameter>
+        <Key>Parameter2</Key>
+        <Value>Value2</Value>
+      </Parameter>
+    </Parameters>
+  </Function>
 </Functions>

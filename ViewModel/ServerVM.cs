@@ -9,11 +9,8 @@ using System.Xml.Linq;
 
 namespace QueryToJson.ViewModel
 {
-    public enum ServerMVStatus { Free, Add, Edit }
-
-    public class ServersVM : ViewModelBase
+    public class ServersVM : ViewModelBase, IAPIListView
     {
-        private ObservableCollection<Server> _servers;
         private RelayCommand _deleteServerCommand;
         private RelayCommand _addServerCommand;
         private RelayCommand _toggleAddPanelCommand;
@@ -21,11 +18,8 @@ namespace QueryToJson.ViewModel
         private Server _newServer;
         private Visibility _addPanelVisibility = Visibility.Collapsed;
 
-        public ObservableCollection<Server> Servers
-        {
-            get => _servers;
-            set => _servers = value;
-        }
+        public XElement Root { get; set; }
+        public ObservableCollection<Server> Servers { get; set; }
         public RelayCommand DeleteServerCommand
         {
             get
@@ -62,7 +56,11 @@ namespace QueryToJson.ViewModel
         public Server SelectedServer
         {
             get => _selectedServer;
-            set => _selectedServer = value;
+            set
+            {
+                Set("SelectedServer", ref _selectedServer, value);
+                _selectedServer = value;
+            }
         }
         public Server NewServer
         {
@@ -85,14 +83,11 @@ namespace QueryToJson.ViewModel
             }
         }
 
-        private XMLHandler xmlHandler;
-        private XElement serversRoot;
-
-        public ServersVM(XMLHandler xmlHandler)
+        public ServersVM(XElement root)
         {
-            xmlHandler = xmlHandler;
-            serversRoot = xmlHandler.LoadXmlFile("Servers.xml");
+            Root = root;
 
+            // Setup the servers list listview.
             Servers = SetupServersList();
         }
 
@@ -100,7 +95,7 @@ namespace QueryToJson.ViewModel
         {
             try
             {
-                var servers = serversRoot.Elements("Server").Select(
+                var servers = Root.Elements("Server").Select(
                     server => new Server
                     {
                         Name = server.Element("Name").Value,
@@ -122,10 +117,10 @@ namespace QueryToJson.ViewModel
                 string name = SelectedServer.Name;
                 string ip = SelectedServer.Ip;
 
-                XElement serverToDelete = serversRoot.Elements("Server").Single(x => x.Element("Name").Value == name && x.Element("Ip").Value == ip);
+                XElement serverToDelete = Root.Elements("Server").Single(x => x.Element("Name").Value == name && x.Element("Ip").Value == ip);
 
                 serverToDelete.Remove();
-                serversRoot.Save("Servers.xml");
+                Root.Save("Servers.xml");
 
                 Servers.Remove(Servers.Single(s => s.Name == name && s.Ip == ip));
             }
@@ -142,14 +137,14 @@ namespace QueryToJson.ViewModel
 
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(ip))
             {
-                MessengerInstance.Send(new ShowMessage(MessageType.AddServerError));
+                MessengerInstance.Send(new ShowMessageBar(MessageType.AddServerError));
                 return;
             }
 
             try
             {
                 // check if server exists in db.
-                serversRoot.Elements("Server").Single(x => x.Element("Name").Value == name && x.Element("Ip").Value == ip);
+                Root.Elements("Server").Single(x => x.Element("Name").Value == name && x.Element("Ip").Value == ip);
             }
             catch (InvalidOperationException ex)
             {
@@ -158,8 +153,8 @@ namespace QueryToJson.ViewModel
                 newServer.Add(new XElement("Name", name));
                 newServer.Add(new XElement("Ip", ip));
 
-                serversRoot.Add(newServer);
-                serversRoot.Save("Servers.xml");
+                Root.Add(newServer);
+                Root.Save("Servers.xml");
 
                 Servers.Add(new Server { Name = name, Ip = ip });
             }

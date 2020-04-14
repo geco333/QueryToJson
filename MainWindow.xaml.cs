@@ -17,84 +17,7 @@ namespace QueryToJson
     {
         public MainWindow() => InitializeComponent();
 
-        private void ToggleAddServerPanel()
-        {
-            addServerNameBox.Text = string.Empty;
-            addServerIpBox.Text = string.Empty;
-
-            addServerPanel.Visibility = addServerPanel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-
-            addServerBtn.Visibility = addServerBtn.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-            delServerBtn.Visibility = delServerBtn.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-        }
-        private string BuildBody()
-        {
-            StringBuilder sb = new StringBuilder();
-            StringWriter sw = new StringWriter(sb);
-
-            try
-            {
-                using (JsonWriter jr = new JsonTextWriter(sw))
-                {
-                    jr.Formatting = Formatting.Indented;
-
-                    jr.WriteStartObject();
-
-                    foreach (ApiFunctionParameter item in jsonFieldsLv.Items)
-                    {
-                        jr.WritePropertyName(item.Key);
-                        jr.WriteValue(item.Value);
-                    }
-
-                    jr.WriteEndObject();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
-            }
-
-            return sb.ToString();
-        }
-
-        private void OnClickSend(object sender, RoutedEventArgs e)
-        {
-            string body = BuildBody();
-        }
-        private void OnClickCopyToApi(object sender, RoutedEventArgs e)
-        {
-            //if (!string.IsNullOrEmpty(json))
-            //    Constants.ClipBoard = JObject.Parse(json);
-        }
-        private void OnClickPasteFromClipboard(object sender, RoutedEventArgs e)
-        {
-            foreach (ApiFunctionParameter item in jsonFieldsLv.Items)
-            {
-                if (Constants.ClipBoard.ContainsKey(item.Key))
-                {
-                    item.Value = (string)Constants.ClipBoard[item.Key];
-                    jsonFieldsLv.Items.Refresh();
-                }
-            }
-        }
         private void OnTabFocusChange(object sender, SelectionChangedEventArgs e) => pasteFromClipboard.Visibility = Constants.ClipBoard is null ? Visibility.Collapsed : Visibility.Visible;
-        private void OnClickAddServerButton(object sender, RoutedEventArgs e) => ToggleAddServerPanel();
-        private void OnClickCencelAddServer(object sender, RoutedEventArgs e) => ToggleAddServerPanel();
-        private void OnClickConfirmAddServer(object sender, RoutedEventArgs e)
-        {
-            string name = addServerNameBox.Text;
-            string ip = addServerIpBox.Text;
-
-            if (name != string.Empty && ip != string.Empty)
-            {
-                ToggleAddServerPanel();
-            }
-
-        }
-        private void OnClickDelServerBtn(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 
     public static class Constants
@@ -118,23 +41,5 @@ namespace QueryToJson
         {
             StringContent content = new StringContent(body, Encoding.UTF8, "application/json");
         }
-    }
-    public class XMLHandler
-    {
-        private static XMLHandler instance = null;
-        public static XMLHandler Instance
-        {
-            get
-            {
-                if (instance == null)
-                    instance = new XMLHandler();
-
-                return instance;
-            }
-        }
-
-        private XMLHandler() { }
-
-        public XElement LoadXmlFile(string fileName) => XElement.Load(fileName);
-    }
+    }    
 }
